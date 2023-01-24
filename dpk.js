@@ -32,6 +32,8 @@ const crypto = require("crypto");
 const TRIVIAL_PARTITION_KEY = "0";
 const MAX_PARTITION_KEY_LENGTH = 256;
 
+// this function is handling event parameter as null or undefined
+// and checking if event has partitionKey property
 function getPartitionKey(event) {
   if (!event) {
     return;
@@ -45,6 +47,7 @@ function getPartitionKey(event) {
   return crypto.createHash("sha3-512").update(data).digest("hex");
 }
 
+// this function is handling candidate parameter
 function candidateStringfy(candidate) {
   if (candidate) {
     if (typeof candidate !== "string") {
@@ -57,6 +60,7 @@ function candidateStringfy(candidate) {
   return candidate;
 }
 
+// this function is handling candidate parameter
 function validateCandidate(candidate) {
   if (candidate.length > MAX_PARTITION_KEY_LENGTH) {
     return crypto.createHash("sha3-512").update(candidate).digest("hex");
@@ -64,6 +68,14 @@ function validateCandidate(candidate) {
   return candidate;
 }
 
+/**
+ * Explanation: breaking down the function into smaller functions, this helps to understand the code better
+ * and also helps to test each function separately, also helps to reuse the functions in other places.
+ * This function can be further improved by using the ternary operator and also by using the optional chaining operator.
+ * 
+ * @param {*} event 
+ * @returns 
+ */
 exports.deterministicPartitionKey = (event) => {
   let candidate = getPartitionKey(event);
 
