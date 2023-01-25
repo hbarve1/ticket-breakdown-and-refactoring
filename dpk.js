@@ -32,6 +32,15 @@ const crypto = require("crypto");
 const TRIVIAL_PARTITION_KEY = "0";
 const MAX_PARTITION_KEY_LENGTH = 256;
 
+/**
+ * This function is creating a hash from the data
+ * @param {*} data 
+ * @returns 
+ */
+function createHash(data) {
+  return crypto.createHash("sha3-512").update(data).digest("hex");
+}
+
 // this function is handling event parameter as null or undefined
 // and checking if event has partitionKey property
 function getPartitionKey(event) {
@@ -44,7 +53,7 @@ function getPartitionKey(event) {
   }
 
   const data = JSON.stringify(event);
-  return crypto.createHash("sha3-512").update(data).digest("hex");
+  return createHash(data);
 }
 
 // this function is handling candidate parameter
@@ -63,7 +72,7 @@ function candidateStringfy(candidate) {
 // this function is handling candidate parameter
 function validateCandidate(candidate) {
   if (candidate.length > MAX_PARTITION_KEY_LENGTH) {
-    return crypto.createHash("sha3-512").update(candidate).digest("hex");
+    return createHash(candidate);
   }
   return candidate;
 }
